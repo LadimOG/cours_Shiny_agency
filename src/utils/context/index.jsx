@@ -31,3 +31,15 @@ export const SurveyProvider = ({children}) => {
   )
 }
 
+
+export const TitleContext = createContext()
+
+export const Titleprovider = ({children}) => {
+  const [title, setTitle] = useState("Bienvenue sur la page d'accueuil 🏠")
+  
+  return (
+    <TitleContext.Provider  value={{title, setTitle}}>
+      {children}
+    </TitleContext.Provider>
+  )
+}

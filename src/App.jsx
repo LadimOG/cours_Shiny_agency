@@ -8,7 +8,7 @@ import Navbar from './components/Navbar'
 import Result from './pages/Results'
 import Footer from './components/Footer'
 import GlobalStyle from './utils/styles/GlobalStyle'
-import {ThemeProvider, SurveyProvider} from './utils/context'
+import {ThemeProvider, SurveyProvider, Titleprovider} from './utils/context'
 
 
 
@@ -17,6 +17,7 @@ import {ThemeProvider, SurveyProvider} from './utils/context'
   return (
     <ThemeProvider>
       <SurveyProvider>
+      <Titleprovider>
       <Router>
         <GlobalStyle />
         <Navbar />
@@ -30,6 +31,7 @@ import {ThemeProvider, SurveyProvider} from './utils/context'
         </Routes>
         <Footer />
       </Router>
+      </Titleprovider>
       </SurveyProvider>
     </ThemeProvider>
   )

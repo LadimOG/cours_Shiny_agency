@@ -1,9 +1,10 @@
-import { React, useContext, useEffect, useState } from 'react'
+import { useContext} from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Loader } from '../utils/styles/Atoms'
 import styled from 'styled-components'
 import colors from '../utils/colors'
 import { SurveyContext } from '../utils/context/index'
+import {useFetch} from '../utils/hooks'
 
 const ContainerQuestion = styled.div`
   display: flex;
@@ -50,31 +51,22 @@ function Survey() {
   const questionPrevious = questionNumberInt === 1 ? 1 : questionNumberInt - 1
   const questionNext = questionNumberInt + 1
 
-  const [surveyData, setSurveyData] = useState({})
-  const [isDataLoading, setDataLoading] = useState(false)
   const { answers, saveAnswers } = useContext(SurveyContext)
-
+  const {data, isLoading, error} = useFetch(`http://localhost:8000/survey`)
+  const {surveyData} = data
   function saveReply(answer) {
     saveAnswers({ [questionNumber]: answer })
   }
 
-  useEffect(() => {
-    setDataLoading(true)
-    fetch(`http://localhost:8000/survey`).then((response) =>
-      response
-        .json()
-        .then(({ surveyData }) => {
-          setSurveyData(surveyData)
-          setDataLoading(false)
-        })
-        .catch((error) => console.log(error))
-    )
-  }, [])
+  if(error) {
+    return <span style={{color: "red", textAlign: 'center', fontWeight: "bold", padding: "100px"}}>il y a un probleme !!!</span>
+  }
 
   return (
     <ContainerQuestion>
       <h1>Question{questionNumber}</h1>
-      {isDataLoading ? <Loader /> : <h2>{surveyData[questionNumber]}</h2>}
+      {surveyData && surveyData[questionNumber]}
+      {isLoading ? <Loader /> : <h2>{data[questionNumber]}</h2>}
       <ReplyWrapper>
             <ReplyBox
               onClick={() => saveReply(true)}
@@ -91,7 +83,7 @@ function Survey() {
           </ReplyWrapper>
       <LinkWrapper>
         <Link to={`/survey/${questionPrevious}`}>précédent</Link>
-        {surveyData[questionNumberInt + 1] ? (
+        {data[questionNumberInt + 1] ? (
           <Link to={`/survey/${questionNext}`}>suivant</Link>
         ) : (
           <Link to="/results">Résultats</Link>
